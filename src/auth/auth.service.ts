@@ -69,14 +69,26 @@ export class AuthService {
         const saltOrRounds = 10;
         return await bcrypt.hash(password, saltOrRounds);
     }
-
     async comparePasswords(args:{password: string, hash: string}){
         //compar parola primita cu parola hashuita
         return await bcrypt.compare(args.password, args.hash);
     }
-
     async signToken(args:{userId: string, email: string}){
         const payload = args;
         return this.jwt.sign(payload, {secret: jwtSecret, expiresIn: '1h'});
+    }
+
+    async validateUser(email: string, password: string){
+        //verific daca exista un user cu emailul primit
+        const foundUser = await this.prisma.user.findUnique({where: {email}});
+        if(!foundUser){
+            throw new BadRequestException('Wrong credentials!');
+        }
+        //verific daca parola primita este aceeasi cu parola hashuita
+        const isMatch = await this.comparePasswords({password, hash: foundUser.hashedPassword});
+        if(!isMatch){
+            throw new BadRequestException('Wrong credentials!');
+        }
+        return foundUser;
     }
 }

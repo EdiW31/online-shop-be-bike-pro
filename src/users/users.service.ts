@@ -1,28 +1,73 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { Request } from 'express';
+import { UsersDto } from './dto/users.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
     constructor(private prisma: PrismaService){}
-    async getMyUser(id: string, req:Request) {
-        const user = await this.prisma.user.findUnique({where: {id: id}});
 
-        // daca userul nu exista, aruncam o exceptie
+    // luam user-ul dupa id
+    async getMyUser(id: string, req:Request) { 
+        const user = await this.prisma.user.findUnique({where: {id: id}});
         if(!user){
             throw new NotFoundException('User not found');
         }
-        // daca userul nu este cel care face requestul, aruncam o exceptie ca nu are voie sa vada userul
-        const decodedUser = req.user as {id: string, email: string};
-        if(decodedUser.id !== user.id){
-            throw new ForbiddenException('You are not allowed to see this user!');
-        }
-        // stergem parola hashuita din raspuns
-        delete user.hashedPassword;
-
-        return {user};
+        return {user}; 
     }
-    async getUsers() {
-        return await this.prisma.user.findMany({select: {id: true, email:true}}); // returneaza toti userii numa cu id si email
+    // luam toti userii
+    async getUsers(role?: 'ADMIN' | 'USER') {
+        if(role) return await this.prisma.user.findMany({
+            where: {
+                role: role
+            },
+            select: {
+                id: true,
+                email: true
+            }
+        });
+        return await this.prisma.user.findMany(); // returneaza toti userii numa cu id si email
+    }
+    // stergem userul dupa id si asta poate sa fie facut numai de catre admin
+    async deleteUser(id: string){
+        const user = await this.prisma.user.findUnique({where: {id: id}});
+        if(!user){
+            throw new NotFoundException('User not found');
+        }
+        await this.prisma.user.delete({where: {id: id}});
+        return {message: 'User was deleted'};
+    }
+    // creem user
+    async createUser(createNewUserDto: UsersDto) {
+        const {email, password} = createNewUserDto;
+        return await this.prisma.user.create({data:{
+            email: email,
+            hashedPassword: await bcrypt.hash(password, 10),
+            role: 'USER'
+        }});
+    }
+    // update user
+    async updateUser(id: string, updateUserDto: UsersDto) {
+        // vedem daca exista user ul
+        const {email, password} = updateUserDto;
+        if (updateUserDto.email) {
+            const existingUser = await this.prisma.user.findUnique({
+                where: { email: email },
+            });
+            // daca gasim un user cu acelasi email aruncam erroare
+            if (existingUser && existingUser.id !== id) {
+                throw new Error('Email already in use by another user.');
+            }
+        }
+    
+        // procedeasa cu update daca email nu exista, aici poti adauga cate campuri vrei sa fie updatate
+        return await this.prisma.user.update({
+            where: { id: id },
+            data: {
+                email: email,
+                hashedPassword: await bcrypt.hash(password, 10),
+            },
+        });
     }
 }
