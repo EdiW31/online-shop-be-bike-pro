@@ -6,26 +6,31 @@ import { ProductDto } from './dto/productDto';
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
-  @Post()
+  //creare produs
+  @Post('create')
   create(@Body() createProductDto: ProductDto) {
     return this.productsService.create(createProductDto);
   }
 
+  //afisare toate produsele
   @Get()
   findAll() {
     return this.productsService.findAll();
   }
 
+  //afisare produs dupa id
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.productsService.findOne(+id);
   }
 
+  //update produs
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateProductDto: ProductDto) {
     return this.productsService.update(+id,updateProductDto);
   }
 
+  //stergere produs
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.productsService.remove(+id);
