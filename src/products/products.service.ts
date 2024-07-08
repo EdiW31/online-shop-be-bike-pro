@@ -13,7 +13,7 @@ export class ProductsService {
   findAll() {
     return this.prisma.product.findMany();
   }
-
+  
   findOne(id: number) {
     return this.prisma.product.findUnique({where: {id: id}});
   }
@@ -24,5 +24,5 @@ export class ProductsService {
 
   remove(id: number) {
     return this.prisma.product.delete({where: {id: id}});
-  }
+  } 
 }

@@ -32,7 +32,7 @@ export class AuthService {
         return {message: 'signup was succsessful'}
     }
 
-    async signin(dto:AuthDto, req:Request, res: Response){
+    async signin(dto:AuthDto){
         const {email, password}=dto;
 
         //verific daca exista un user cu emailul primit
@@ -49,13 +49,14 @@ export class AuthService {
         
         // jwt token
         const token = await this.signToken({userId: foundUser.id, email: foundUser.email});
-        
         if(!token){
             throw new BadRequestException('Something went wrong!');
         }
+        console.log("tojen", token)
         //setez tokenul in cookie
-        res.cookie('token', token, {httpOnly: true});
-        return res.send({message: 'signin was successful'});
+        return  {
+            access_token: token,
+          };
     }
 
     //stergem cookie-ul cu token si este logout

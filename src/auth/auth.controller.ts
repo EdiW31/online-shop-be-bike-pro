@@ -12,9 +12,11 @@ export class AuthController {
   }
 
   @Post('signin')
-  signin(@Body() dto: AuthDto, @Req() req, @Res() res){
+  async signin(@Body() dto: AuthDto){
     //returnam ce returneaza metoda signin din AuthService
-    return this.authService.signin(dto, req, res);
+    const resp = await this.authService.signin(dto);
+    console.log("resp",resp)
+    return resp
   }
 
   @Get('logout')
