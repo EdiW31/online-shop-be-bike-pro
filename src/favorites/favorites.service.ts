@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateFavoriteDto } from './dto/create-favorite.dto';
 import { PrismaService } from '../../prisma/prisma.service';
-import { User } from '@prisma/client';
 
 @Injectable()
 export class FavoritesService {

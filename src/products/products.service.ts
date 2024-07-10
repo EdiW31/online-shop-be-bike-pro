@@ -11,7 +11,9 @@ export class ProductsService {
   }
 
   findAll() {
-    return this.prisma.product.findMany();
+    return this.prisma.product.findMany(
+      {include:{reviews:true, photos:true, category:true}}
+    );
   }
   
   findOne(id: number) {

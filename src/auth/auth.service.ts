@@ -1,4 +1,4 @@
-import {BadRequestException, Injectable } from '@nestjs/common';
+import {BadRequestException, Injectable, Res } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { AuthDto } from './dto/auth.dto';
 import { JwtService } from '@nestjs/jwt';
@@ -32,7 +32,7 @@ export class AuthService {
         return {message: 'signup was succsessful'}
     }
 
-    async signin(dto:AuthDto){
+    async signin(dto:AuthDto, @Res() res: Response){
         const {email, password}=dto;
 
         //verific daca exista un user cu emailul primit
@@ -54,9 +54,14 @@ export class AuthService {
         }
         console.log("tojen", token)
         //setez tokenul in cookie
-        return  {
+        res.cookie('token', token, {httpOnly: true});
+        return res.json({
+            message: 'signin was successful',
             access_token: token,
-          };
+        });
+        //send the cookie to the client
+        
+        
     }
 
     //stergem cookie-ul cu token si este logout

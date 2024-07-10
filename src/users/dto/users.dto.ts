@@ -7,6 +7,9 @@ export class UsersDto{
     @IsEmail()
     public email: string;
 
+    @IsNotEmpty()
+    @IsString()
+    public name: string;
     //verificam daca parola este string si are intre 3 si 20 de caractere
     @IsNotEmpty()
     @IsString()
