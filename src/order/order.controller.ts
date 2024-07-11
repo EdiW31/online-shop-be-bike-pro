@@ -2,14 +2,11 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request }
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { RolesGuard } from 'src/Guards/role.guard';
-import { Roles } from 'src/roles.decorator';
-import {Stripe} from 'stripe';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 
 
 @Controller('order')
-@UseGuards(RolesGuard, JwtAuthGuard)
+@UseGuards(JwtAuthGuard)
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
