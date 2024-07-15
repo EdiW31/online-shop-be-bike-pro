@@ -6,5 +6,6 @@ import { APP_GUARD } from '@nestjs/core';
 @Module({
   controllers: [ProductsController],
   providers: [ProductsService],
+  exports: [ProductsService],
 })
 export class ProductsModule {}

@@ -8,10 +8,11 @@ import { CategoryModule } from './category/category.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { StripeModule } from './stripe/stripe.module';
 import { ReviewsModule } from './reviews/reviews.module';
+import { UploadModule } from './upload/upload.module';
 
 
 @Module({
-  imports: [AuthModule, PrismaModule, UsersModule, ProductsModule, OrderModule, CategoryModule, FavoritesModule, StripeModule, ReviewsModule],
+  imports: [AuthModule, PrismaModule, UsersModule, ProductsModule, OrderModule, CategoryModule, FavoritesModule, StripeModule, ReviewsModule, UploadModule],
   providers: [],
 })
 export class AppModule {}

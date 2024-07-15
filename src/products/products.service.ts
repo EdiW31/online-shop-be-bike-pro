@@ -6,6 +6,16 @@ import { ProductDto } from './dto/productDto';
 export class ProductsService {
   constructor(private prisma: PrismaService){}
 
+  async addProductPhotos(productId:number, photoUrl: string[]){
+    const photoData = photoUrl.map(url => ({
+      photoUrl: url,
+      productId: productId
+    }));
+    return this.prisma.productPhoto.createMany({
+      data: photoData
+    })
+  }
+
   create(createProductDto: ProductDto ) {
     return this.prisma.product.create({data: createProductDto});
   }
