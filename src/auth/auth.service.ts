@@ -15,9 +15,7 @@ export class AuthService {
         const {email, password}=dto;
         //verific daca exista un user cu emailul primit
         const foundUser = await this.prisma.user.findUnique({where: {email}});
-        if(foundUser){
-            throw new BadRequestException('Email already exists!');
-        }
+        
         const hashedPassword = await this.hashPassword(password);
         
         await this.prisma.user.create({
@@ -57,7 +55,7 @@ export class AuthService {
         res.cookie('token', token, {httpOnly: true});
         return res.json({
             message: 'signin was successful',
-            access_token: token,
+            token: token,
         });
         //send the cookie to the client
         
