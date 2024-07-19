@@ -56,6 +56,7 @@ export class AuthService {
         return res.json({
             message: 'signin was successful',
             token: token,
+            user: foundUser
         });
         //send the cookie to the client
         
@@ -79,7 +80,7 @@ export class AuthService {
     }
     async signToken(args:{userId: string, email: string}){
         const payload = args;
-        return this.jwt.sign(payload, {secret: jwtSecret, expiresIn: '1h'});
+        return this.jwt.sign(payload, {secret: jwtSecret, expiresIn: '7d'});
     }
 
     async validateUser(email: string, password: string){

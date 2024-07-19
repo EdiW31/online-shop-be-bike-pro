@@ -16,9 +16,9 @@ export class FavoritesController {
 
   @Get('showfav')
   async showFav(@Req() req) {
-  const userId = req.user; // Assuming the user object has an id field
-  return this.favoritesService.showAllFavorite(userId);
-}
+    const userId = req.user; // Assuming the user object has an id field
+    return this.favoritesService.showAllFavorite(userId);
+  }
 
   @Delete(':id')
   remove(@Param('id') id: string) {

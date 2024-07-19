@@ -1,19 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { ProductDto } from './dto/productDto';
+import { parse } from 'path';
 
 @Injectable()
 export class ProductsService {
   constructor(private prisma: PrismaService){}
 
-  async addProductPhotos(productId:number, photoUrl: string[]){
-    const photoData = photoUrl.map(url => ({
-      photoUrl: url,
-      productId: productId
-    }));
-    return this.prisma.productPhoto.createMany({
-      data: photoData
-    })
+  async addProductPhotos(productId: string, photoUrls: string) {
+    console.log("productId", productId)
+    const numericProductId = parseInt(productId,10);
+    const product = await this.prisma.product.findUnique({where: {id: numericProductId}});
+    if (!product) {
+      throw new Error('Product not found');
+    }
+    await this.prisma.product.update({
+      where: {id: numericProductId},
+      data: {
+        photos: {
+          create: [{photoUrl: photoUrls}], // Adjusted to use photoUrls directly as a single object
+        },
+      },
+    });
   }
 
   create(createProductDto: ProductDto ) {

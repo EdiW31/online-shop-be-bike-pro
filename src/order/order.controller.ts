@@ -22,10 +22,10 @@ export class OrderController {
     return this.orderService.findAll();
   }
   
-  @Get(':id')
+  @Get(':userId')
   // @Roles('ADMIN')
-  findOne(@Param('id') id: string) {
-    return this.orderService.findOne(+id);
+  findOne(@Param('userID') userId: string) {
+    return this.orderService.findOne(userId);
   }
 
   @Patch(':id')

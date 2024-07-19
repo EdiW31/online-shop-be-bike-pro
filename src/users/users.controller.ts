@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuard
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { UsersDto } from './dto/users.dto';
+import { UpdateUsersDto } from './dto/updateUser.dto';
 
 
 
@@ -35,8 +36,7 @@ export class UsersController {
   }
 
   @Patch(':id')
-  updateUser(@Param('id') id: string, @Body() updateUserDto: UsersDto){
+  updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUsersDto){
     return this.usersService.updateUser(id, updateUserDto);
   }
-
 }

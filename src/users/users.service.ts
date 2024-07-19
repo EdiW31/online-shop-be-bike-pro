@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { Request } from 'express';
 import { UsersDto } from './dto/users.dto';
+import { UpdateUsersDto } from './dto/updateUser.dto';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -49,25 +50,16 @@ export class UsersService {
         }});
     }
     // update user
-    async updateUser(id: string, updateUserDto: UsersDto) {
+    async updateUser(id: string, updateUserDto: UpdateUsersDto) {
         // vedem daca exista user ul
-        const {email, password} = updateUserDto;
-        if (updateUserDto.email) {
-            const existingUser = await this.prisma.user.findUnique({
-                where: { email: email },
-            });
-            // daca gasim un user cu acelasi email aruncam erroare
-            if (existingUser && existingUser.id !== id) {
-                throw new Error('Email already in use by another user.');
-            }
-        }
-    
+        const {email, name, role } = updateUserDto;
+        const user = await this.prisma.user.findUnique({where: {id: id}});
         // procedeasa cu update daca email nu exista, aici poti adauga cate campuri vrei sa fie updatate
         return await this.prisma.user.update({
             where: { id: id },
             data: {
+                name: name,
                 email: email,
-                hashedPassword: await bcrypt.hash(password, 10),
             },
         });
     }

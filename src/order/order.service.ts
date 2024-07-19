@@ -88,12 +88,15 @@ export class OrderService {
   }
   // gaseste toate order-urile
   findAll() {
-    return this.prisma.order.findMany();
+    return this.prisma.order.findMany(
+      {include:{items:true,}}
+    );
   }
   // gaseste un order
-  findOne(id: number) {
-    return this.prisma.order.findUnique({
-      where: { id:id },
+  findOne(userid: string) {
+    return this.prisma.order.findMany({
+      where: { userId: userid},
+      include: {items: true}
     })
   }
   // actualizeaza un order
