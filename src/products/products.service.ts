@@ -35,7 +35,11 @@ export class ProductsService {
   }
   
   findOne(id: number) {
-    return this.prisma.product.findUnique({where: {id: id}});
+    return this.prisma.product.findUnique({where: {id: id}, include:{reviews:true, photos:true, category:true}});
+  }
+
+  findByCategory(categoryId: number) {
+    return this.prisma.product.findMany({where: {categoryId: categoryId}, include:{reviews:true, photos:true, category:true}});
   }
 
   update(id: number, updateProductDto: ProductDto) {
