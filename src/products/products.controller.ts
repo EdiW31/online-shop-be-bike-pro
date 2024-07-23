@@ -1,12 +1,15 @@
-import { Controller,UseGuards, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
+import { Controller,UseGuards, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, SetMetadata } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { ProductDto } from './dto/productDto';
+
 
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   //creare produs
+
+  // @Roles('admin')
   @Post('create')
   create(@Body() createProductDto: ProductDto) {
     return this.productsService.create(createProductDto);
@@ -23,7 +26,7 @@ export class ProductsController {
   findOne(@Param('id') id: string) {
     return this.productsService.findOne(+id);
   }
- 
+
   @Get('/categorie/:category')
   findByCategory(@Param('category', ParseIntPipe) category: number) {
     return this.productsService.findByCategory(category);
